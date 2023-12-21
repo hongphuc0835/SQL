@@ -1,16 +1,18 @@
 ﻿USE BAITHI
 GO
--- Stored Procedure
-CREATE PROCEDURE CalcDeptTotalSalary
-AS
-BEGIN
-    SELECT D.DepartmentID, D.DepartmentName, SUM(WS.Salary) as TotalSalary
-    FROM Department D
-    JOIN Employee E ON D.DepartmentID = E.DepartmentID
-    JOIN WorkSchedule WS ON E.EmployeeID = WS.EmployeeID
-    GROUP BY D.DepartmentID, D.DepartmentName
-    ORDER BY D.DepartmentID ASC;
-END;
 
--- Sử dụng Stored Procedure
-EXEC CalcDeptTotalSalary;
+CREATE VIEW TotalSalaries AS 
+SELECT 
+    D.DepartmentCode AS DepartmentCode,
+    D.DepartmentName AS DepartmentName,
+    SUM(S.GrossSalary) AS TotalGrossSalary,
+    SUM(S.NetSalary) AS TotalNetSalary
+FROM 
+    Department D
+JOIN Employee E ON D.DepartmentCode = E.DepartmentCode
+JOIN Salary S ON E.EmployeeCode = S.EmployeeCode
+GROUP BY 
+    D.DepartmentCode, D.DepartmentName;
+
+SELECT * FROM TotalSalaries
+ORDER BY DepartmentCode ASC;
